@@ -5,7 +5,8 @@ import express from 'express'
 
 const app = express()
 
-const server = http.createServer(app)
+const server = http.createServer(http)
+
 server.listen(5050)
 
 const wss = new WebSocketServer({ server })
