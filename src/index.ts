@@ -1,7 +1,14 @@
-import { WebSocketServer } from 'ws'
+import { WebSocketServer, Server } from 'ws'
 import { GameManager } from './gameManager'
+import http from 'http'
+import express from 'express'
 
-const wss = new WebSocketServer({ port: 8080 })
+const app = express()
+
+const server = http.createServer(app)
+server.listen(5050)
+
+const wss = new WebSocketServer({ server })
 
 const gameManager = new GameManager()
 
