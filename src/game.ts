@@ -18,24 +18,28 @@ export class Game {
     this.player1.send(
       JSON.stringify({
         type: INIT_GAME,
-        message: {
-          color: 'white',
+        payload: {
+          message: {
+            color: 'white',
+          },
         },
       })
     )
     this.player2.send(
       JSON.stringify({
         type: INIT_GAME,
-        message: {
-          color: 'black',
+        payload: {
+          message: {
+            color: 'black',
+          },
         },
       })
     )
   }
 
   makeMove(socket: WebSocket, move: { to: string; from: string }) {
-    if (this.moveCount % 2 === 0 && this.player1 === socket) return
-    if (this.moveCount % 2 === 1 && this.player2 === socket) return
+    if (this.moveCount % 2 === 0 && this.player1 !== socket) return
+    if (this.moveCount % 2 === 1 && this.player2 !== socket) return
 
     if (!this.board.isGameOver()) {
       try {
@@ -47,14 +51,14 @@ export class Game {
     }
 
     if (this.board.isGameOver()) {
-      this.player1.emit(
+      this.player1.send(
         JSON.stringify({
           type: GAME_OVER,
           payload: { winner: this.board.turn() === 'w' ? 'black' : 'white' },
         })
       )
 
-      this.player2.emit(
+      this.player2.send(
         JSON.stringify({
           type: GAME_OVER,
           payload: { winner: this.board.turn() === 'w' ? 'black' : 'white' },
@@ -66,14 +70,14 @@ export class Game {
       this.player2.send(
         JSON.stringify({
           type: MOVE,
-          payload: move,
+          payload: { move },
         })
       )
     } else {
       this.player1.send(
         JSON.stringify({
           type: MOVE,
-          payload: move,
+          payload: { move },
         })
       )
     }
